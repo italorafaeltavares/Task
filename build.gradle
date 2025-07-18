@@ -1,0 +1,53 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.platformdevlab'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2022.0.4")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+
+	//Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Mongodb
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+	// Kafka
+	implementation 'org.apache.kafka:kafka-streams'
+	implementation 'org.springframework.cloud:spring-cloud-stream'
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka-streams'
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

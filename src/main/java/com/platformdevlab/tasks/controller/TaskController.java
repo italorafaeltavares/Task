@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.awt.image.LookupOp;
@@ -62,6 +63,18 @@ public class TaskController {
                 .map(converter::convert);
     }
 
+    @PostMapping("/start")
+    public Mono<TaskDTO> start(@RequestParam String id, @RequestParam String zipcode) {
+        return service.start(id, zipcode)
+                .map(converter::convert);
+    }
+
+    @PostMapping("/refresh/created")
+    public Flux<TaskDTO> refreshCreated() {
+        return service.refreshCreated()
+                .map(converter::convert);
+    }
+
     @PutMapping
     public  Mono<TaskDTO> updateTask(@RequestBody @Valid TaskUpdateDTO taskUpdateDTO) {
         return service.update(upadteDTOConverter.convert(taskUpdateDTO))
@@ -75,11 +88,5 @@ public class TaskController {
         return Mono.just(id)
                 .doOnNext(it -> LOGGER.info("Deleting task with id {}", id))
                 .flatMap(service::deleteById);
-    }
-
-    @PostMapping("/start")
-    public Mono<TaskDTO> start(@RequestParam String id, @RequestParam String zipcode) {
-        return service.start(id, zipcode)
-                .map(converter::convert);
     }
 }
